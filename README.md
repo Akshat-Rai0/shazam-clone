@@ -9,23 +9,32 @@ A full-stack audio fingerprinting and recognition system inspired by Shazam, bui
 - **Real-time Processing**: Background task processing for handling large audio files
 - **Visualization**: View spectrograms and detected peaks for any uploaded song
 - **RESTful API**: Complete CRUD operations for artists, songs, and recognition
+- **Modern Frontend**: Beautiful React UI with drag-and-drop audio upload
+- **Real-time Stats**: Live monitoring of system performance and processing status
 
 ## 🛠️ Tech Stack
 
 - **Backend**: FastAPI (Python 3.11)
+- **Frontend**: React 18 with modern hooks
 - **Database**: PostgreSQL with SQLAlchemy ORM
 - **Audio Processing**: librosa, scipy, numpy
 - **Visualization**: matplotlib
+- **UI Components**: Custom CSS with glass-morphism design
+- **File Upload**: React Dropzone for drag-and-drop
+- **HTTP Client**: Axios with interceptors
 - **Containerization**: Docker & Docker Compose
 - **Migrations**: Alembic
 
 ## 📋 Prerequisites
 
-- Docker & Docker Compose
+- Docker & Docker Compose (for backend)
+- Node.js v14+ (for frontend)
 - 4GB RAM minimum (for audio processing)
 - 2GB free disk space
 
 ## 🏃 Quick Start
+
+### Backend Setup
 
 1. **Clone the repository**
 ```bash
@@ -35,15 +44,28 @@ cd shazam-clone
 
 2. **Create `.env` file** (see Configuration section below)
 
-3. **Start the application**
+3. **Start the backend**
 ```bash
 docker-compose up --build
 ```
 
-4. **Access the API**
-- API Documentation: http://localhost:8000/docs
-- Interactive UI: http://localhost:8000/visualize/all
-- Health Check: http://localhost:8000/health
+### Frontend Setup
+
+4. **Setup and start the frontend**
+```bash
+# Run the setup script
+./setup-frontend.sh
+
+# Or manually:
+cd frontend
+npm install
+npm start
+```
+
+5. **Access the application**
+- **Frontend UI**: http://localhost:3000 (Beautiful React interface)
+- **API Documentation**: http://localhost:8000/docs
+- **Backend Health**: http://localhost:8000/health
 
 ## ⚙️ Configuration
 
@@ -129,7 +151,7 @@ curl "http://localhost:8000/recognize/stats"
 
 ```
 shazam-clone/
-├── app/
+├── app/                  # Backend API
 │   ├── api/              # API route handlers
 │   │   ├── artists.py
 │   │   ├── songs.py
@@ -137,21 +159,24 @@ shazam-clone/
 │   │   ├── recognize.py
 │   │   └── visualize.py
 │   ├── core/             # Core configurations
-│   │   └── database.py
 │   ├── models/           # SQLAlchemy models
-│   │   └── models.py
 │   ├── schemas/          # Pydantic schemas
-│   │   └── schemas.py
 │   ├── services/         # Business logic
-│   │   ├── fingerprint.py   # Audio fingerprinting
-│   │   ├── file_handler.py  # File operations
-│   │   └── visualize.py     # Spectrogram generation
 │   └── main.py           # FastAPI application
+├── frontend/             # React Frontend
+│   ├── src/
+│   │   ├── components/   # Reusable UI components
+│   │   ├── pages/        # Page components
+│   │   ├── services/     # API client
+│   │   └── App.js        # Main app
+│   ├── public/           # Static assets
+│   └── package.json      # Dependencies
 ├── alembic/              # Database migrations
 ├── media/                # Uploaded audio files
 ├── docker-compose.yml
 ├── Dockerfile
 ├── requirements.txt
+├── setup-frontend.sh     # Frontend setup script
 └── .env
 ```
 
@@ -197,14 +222,25 @@ View spectrograms and detected peaks:
 - Processing time: ~30-60 seconds per song
 - No real-time streaming recognition
 
+## 🎨 Frontend Features
+
+- **🎵 Audio Recognition**: Drag-and-drop audio upload with real-time results
+- **📤 Song Upload**: Easy song upload with artist management
+- **📚 Music Library**: View all uploaded songs with processing status
+- **📊 Live Statistics**: Real-time system performance monitoring
+- **📱 Responsive Design**: Beautiful UI that works on all devices
+- **🎨 Modern Design**: Glass-morphism effects with gradient backgrounds
+
 ## 🔮 Future Enhancements
 
-- [ ] Add frontend UI for easier interaction
+- [x] ✅ Add frontend UI for easier interaction
 - [ ] Implement WebSocket for real-time processing updates
 - [ ] Add support for more audio formats (AAC, OGG)
 - [ ] Optimize fingerprinting for faster processing
 - [ ] Add batch upload functionality
 - [ ] Implement caching for frequently queried songs
+- [ ] Add audio recording directly in browser
+- [ ] Implement playlist management
 
 ## 📝 License
 
