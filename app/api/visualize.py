@@ -172,7 +172,7 @@ async def get_spectrogram_json(
             "duration": song.duration,
             "is_processed": song.is_processed,
             "show_peaks": show_peaks,
-            "image_url": f"data:image/png;base64,{img_base64}",
+            "image_url": img_base64,  # img_base64 already includes the data:image/png;base64, prefix
             "description": description,
             "peaks_count": len(peaks) if show_peaks else None
         }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Library as LibraryIcon, Music, User, Clock, CheckCircle, AlertCircle, Eye } from 'lucide-react';
+import { Library as LibraryIcon, Music, User, Clock, CheckCircle, Eye } from 'lucide-react';
 import { getSongs, getUploadStatus } from '../services/api';
 import SpectrogramModal from '../components/SpectrogramModal';
 import './Library.css';

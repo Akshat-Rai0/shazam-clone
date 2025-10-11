@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Maximize2, Music, Search } from 'lucide-react';
+import { X, Download, Music, Search } from 'lucide-react';
 import './RecognitionVisualization.css';
 
 const RecognitionVisualization = ({ isOpen, onClose, visualizationData, matchData }) => {
@@ -14,10 +14,15 @@ const RecognitionVisualization = ({ isOpen, onClose, visualizationData, matchDat
 
   const handleDownload = () => {
     if (visualizationData?.image_url) {
+      console.log('Downloading recognition visualization:', visualizationData.image_url.substring(0, 50) + '...');
       const link = document.createElement('a');
       link.href = visualizationData.image_url;
       link.download = `recognition_comparison_${Date.now()}.png`;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+    } else {
+      console.error('No image URL available for download');
     }
   };
 
@@ -78,6 +83,8 @@ const RecognitionVisualization = ({ isOpen, onClose, visualizationData, matchDat
                 src={visualizationData.image_url}
                 alt="Recognition comparison visualization"
                 className="recognition-image"
+                onLoad={() => console.log('Recognition visualization image loaded successfully')}
+                onError={(e) => console.error('Error loading recognition visualization image:', e)}
               />
               {visualizationData.description && (
                 <div className="visualization-info">
