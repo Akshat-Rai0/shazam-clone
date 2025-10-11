@@ -204,9 +204,9 @@ export const getAllVisualizations = async () => {
   }
 };
 
-export const getSongVisualization = async (songId) => {
+export const getSongVisualization = async (songId, showPeaks = false) => {
   try {
-    const response = await api.get(`/visualize/${songId}`);
+    const response = await api.get(`/visualize/api/spectrogram/${songId}?show_peaks=${showPeaks}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.detail || 'Failed to fetch song visualization');

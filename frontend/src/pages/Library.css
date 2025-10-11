@@ -113,6 +113,29 @@
   margin: 0;
 }
 
+.song-title.clickable {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.song-title.clickable:hover {
+  color: #667eea;
+}
+
+.view-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.song-title.clickable:hover .view-icon {
+  opacity: 1;
+}
+
 .song-status {
   display: flex;
   align-items: center;

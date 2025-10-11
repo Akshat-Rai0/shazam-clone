@@ -1,13 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Mic, Upload, Music, Search } from 'lucide-react';
-import { recognizeAudio } from '../services/api';
+import { Upload, Music, Search, Eye } from 'lucide-react';
+import { recognizeAudio, recognizeWithVisualization } from '../services/api';
+import RecognitionVisualization from '../components/RecognitionVisualization';
 import './Home.css';
 
 const Home = ({ isLoading, setIsLoading }) => {
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
-  const [isRecording, setIsRecording] = useState(false);
+  const [showVisualization, setShowVisualization] = useState(false);
+  const [visualizationData, setVisualizationData] = useState(null);
+  const [selectedMatch, setSelectedMatch] = useState(null);
 
   const onDrop = useCallback(async (acceptedFiles) => {
     if (acceptedFiles.length === 0) return;
@@ -20,6 +23,8 @@ const Home = ({ isLoading, setIsLoading }) => {
     try {
       const response = await recognizeAudio(file);
       setResults(response);
+      setVisualizationData(null);
+      setShowVisualization(false);
     } catch (err) {
       setError(err.message || 'Recognition failed');
     } finally {
@@ -36,13 +41,33 @@ const Home = ({ isLoading, setIsLoading }) => {
     maxSize: 50 * 1024 * 1024 // 50MB
   });
 
-  const startRecording = () => {
-    setIsRecording(true);
-    // TODO: Implement actual recording functionality
-    setTimeout(() => {
-      setIsRecording(false);
-      setError('Recording functionality not implemented yet. Please upload an audio file.');
-    }, 3000);
+
+  const handleViewVisualization = async (match) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Create a temporary file input to get the original file
+      const fileInput = document.querySelector('input[type="file"]');
+      if (!fileInput || !fileInput.files[0]) {
+        throw new Error('Original audio file not found');
+      }
+      
+      const response = await recognizeWithVisualization(fileInput.files[0]);
+      setVisualizationData(response.visualization);
+      setSelectedMatch(match);
+      setShowVisualization(true);
+    } catch (err) {
+      setError(err.message || 'Failed to generate visualization');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseVisualization = () => {
+    setShowVisualization(false);
+    setVisualizationData(null);
+    setSelectedMatch(null);
   };
 
   return (
@@ -83,18 +108,6 @@ const Home = ({ isLoading, setIsLoading }) => {
               </div>
             </div>
 
-            <div className="divider">
-              <span>or</span>
-            </div>
-
-            <button
-              className={`btn btn-secondary ${isRecording ? 'recording' : ''}`}
-              onClick={startRecording}
-              disabled={isLoading}
-            >
-              <Mic className="btn-icon" />
-              {isRecording ? 'Recording...' : 'Record Audio'}
-            </button>
           </div>
 
           {isLoading && (
@@ -119,23 +132,31 @@ const Home = ({ isLoading, setIsLoading }) => {
               
               {results.success ? (
                 <div className="results-list">
-                  {results.matches.length > 0 ? (
-                    results.matches.map((match, index) => (
-                      <div key={index} className="result-item">
-                        <div className="result-header">
-                          <h4 className="result-title">{match.title}</h4>
-                          <span className="result-confidence">
-                            {Math.round(match.confidence * 100)}% match
-                          </span>
+                    {results.matches.length > 0 ? (
+                      results.matches.map((match, index) => (
+                        <div key={index} className="result-item">
+                          <div className="result-header">
+                            <h4 className="result-title">{match.title}</h4>
+                            <span className="result-confidence">
+                              {Math.round(match.confidence * 100)}% match
+                            </span>
+                          </div>
+                          <p className="result-artist">by {match.artist}</p>
+                          <div className="result-details">
+                            <span>Matches: {match.matches}</span>
+                            <span>Time offset: {match.time_offset}s</span>
+                            <button
+                              className="btn btn-secondary visualization-btn"
+                              onClick={() => handleViewVisualization(match)}
+                              disabled={isLoading}
+                            >
+                              <Eye className="btn-icon" />
+                              View Comparison
+                            </button>
+                          </div>
                         </div>
-                        <p className="result-artist">by {match.artist}</p>
-                        <div className="result-details">
-                          <span>Matches: {match.matches}</span>
-                          <span>Time offset: {match.time_offset}s</span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
+                      ))
+                    ) : (
                     <div className="no-results">
                       <p>No matches found. Try a different audio clip.</p>
                     </div>
@@ -150,6 +171,15 @@ const Home = ({ isLoading, setIsLoading }) => {
           )}
         </div>
       </div>
+
+      {showVisualization && (
+        <RecognitionVisualization
+          isOpen={showVisualization}
+          onClose={handleCloseVisualization}
+          visualizationData={visualizationData}
+          matchData={selectedMatch}
+        />
+      )}
     </div>
   );
 };

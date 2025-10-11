@@ -1,0 +1,219 @@
+.recognition-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.recognition-modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 95vw;
+  max-height: 95vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recognition-modal-header {
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.recognition-modal-title {
+  flex: 1;
+}
+
+.recognition-modal-title h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title-icon {
+  width: 24px;
+  height: 24px;
+  color: #667eea;
+}
+
+.recognition-modal-title p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.recognition-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.recognition-modal-actions .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.recognition-modal-body {
+  padding: 2rem;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.loading-container p {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+.error-container {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-weight: 600;
+  margin: 0;
+}
+
+.recognition-visualization-container {
+  width: 100%;
+  max-width: 1000px;
+  text-align: center;
+}
+
+.visualization-header {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.visualization-header h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.visualization-header p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.recognition-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.visualization-info {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(76, 175, 80, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.visualization-info p {
+  color: #2e7d32;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.no-visualization {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.no-viz-icon {
+  width: 64px;
+  height: 64px;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.no-visualization h4 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.no-visualization p {
+  font-size: 1rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .recognition-modal-overlay {
+    padding: 1rem;
+  }
+  
+  .recognition-modal-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .recognition-modal-actions {
+    justify-content: center;
+  }
+  
+  .recognition-modal-actions .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .recognition-modal-body {
+    padding: 1rem;
+  }
+  
+  .visualization-header {
+    padding: 0.75rem;
+  }
+  
+  .visualization-header h4 {
+    font-size: 1rem;
+  }
+  
+  .visualization-header p {
+    font-size: 0.8rem;
+  }
+}

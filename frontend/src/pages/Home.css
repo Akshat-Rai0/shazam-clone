@@ -79,16 +79,6 @@
   z-index: 2;
 }
 
-.btn.recording {
-  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
 
 .btn-icon {
   width: 20px;
@@ -159,6 +149,8 @@
   font-size: 0.9rem;
   color: #666;
   margin-top: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .result-details span {
@@ -166,6 +158,17 @@
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.8rem;
+}
+
+.visualization-btn {
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.visualization-btn .btn-icon {
+  width: 14px;
+  height: 14px;
 }
 
 .no-results {

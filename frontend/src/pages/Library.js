@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Library as LibraryIcon, Music, User, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Library as LibraryIcon, Music, User, Clock, CheckCircle, AlertCircle, Eye } from 'lucide-react';
 import { getSongs, getUploadStatus } from '../services/api';
+import SpectrogramModal from '../components/SpectrogramModal';
 import './Library.css';
 
 const Library = ({ isLoading, setIsLoading }) => {
   const [songs, setSongs] = useState([]);
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [showSpectrogram, setShowSpectrogram] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -36,6 +39,16 @@ const Library = ({ isLoading, setIsLoading }) => {
 
   const getStatusText = (isProcessed) => {
     return isProcessed ? 'Ready for recognition' : 'Processing...';
+  };
+
+  const handleSongClick = (song) => {
+    setSelectedSong(song);
+    setShowSpectrogram(true);
+  };
+
+  const handleCloseSpectrogram = () => {
+    setShowSpectrogram(false);
+    setSelectedSong(null);
   };
 
   return (
@@ -100,7 +113,14 @@ const Library = ({ isLoading, setIsLoading }) => {
                 <div key={song.id} className="song-item">
                   <div className="song-info">
                     <div className="song-header">
-                      <h4 className="song-title">{song.title}</h4>
+                      <h4 
+                        className="song-title clickable"
+                        onClick={() => handleSongClick(song)}
+                        title="Click to view spectrogram"
+                      >
+                        {song.title}
+                        <Eye className="view-icon" />
+                      </h4>
                       <div className="song-status">
                         {getStatusIcon(song.is_processed)}
                         <span className="status-text">
@@ -128,6 +148,16 @@ const Library = ({ isLoading, setIsLoading }) => {
           )}
         </div>
       </div>
+
+      {selectedSong && (
+        <SpectrogramModal
+          isOpen={showSpectrogram}
+          onClose={handleCloseSpectrogram}
+          songId={selectedSong.id}
+          songTitle={selectedSong.title}
+          songArtist={selectedSong.artist.name}
+        />
+      )}
     </div>
   );
 };

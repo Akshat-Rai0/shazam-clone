@@ -12,6 +12,7 @@ from app.services.fingerprint import (
     generate_spectrogram,
     find_peaks
 )
+import base64
 
 router = APIRouter(prefix="/visualize", tags=["visualization"])
 
@@ -124,6 +125,57 @@ async def get_spectrogram(
         """
         
         return HTMLResponse(content=html_content)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating visualization: {str(e)}")
+
+
+@router.get("/api/spectrogram/{song_id}")
+async def get_spectrogram_json(
+    song_id: int,
+    show_peaks: bool = Query(False, description="Overlay detected peaks on spectrogram"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get spectrogram visualization for a song as JSON data
+    
+    - **song_id**: ID of the song
+    - **show_peaks**: If True, show detected peaks overlaid on spectrogram
+    """
+    song = db.query(Song).filter(Song.id == song_id).first()
+    
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found")
+    
+    if not song.file_path:
+        raise HTTPException(status_code=404, detail="No audio file for this song")
+    
+    try:
+        if show_peaks:
+            # Generate spectrogram with peaks
+            audio, sr = load_audio(song.file_path)
+            spec = generate_spectrogram(audio)
+            peaks = find_peaks(spec)
+            
+            img_base64 = generate_peaks_visualization(song.file_path, peaks)
+            description = f"Spectrogram with {len(peaks)} detected peaks overlaid"
+        else:
+            # Simple spectrogram
+            img_base64 = generate_spectrogram_image(song.file_path)
+            description = "Standard spectrogram visualization"
+        
+        return {
+            "success": True,
+            "song_id": song.id,
+            "title": song.title,
+            "artist": song.artist.name,
+            "duration": song.duration,
+            "is_processed": song.is_processed,
+            "show_peaks": show_peaks,
+            "image_url": f"data:image/png;base64,{img_base64}",
+            "description": description,
+            "peaks_count": len(peaks) if show_peaks else None
+        }
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating visualization: {str(e)}")
