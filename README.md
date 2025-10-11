@@ -244,7 +244,7 @@ View spectrograms and detected peaks:
 
 ## 📝 License
 
-MIT License - feel free to use for learning and projects
+ feel free to use for learning and projects
 
 ## 👤 Author
 
