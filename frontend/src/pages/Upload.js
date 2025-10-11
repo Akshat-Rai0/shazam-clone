@@ -108,7 +108,7 @@ const Upload = ({ isLoading, setIsLoading }) => {
             </p>
           </div>
 
-          <form className="upload-form">
+          <div className="upload-form">
             <div className="form-group">
               <label className="form-label">Song Title</label>
               <input
@@ -152,7 +152,7 @@ const Upload = ({ isLoading, setIsLoading }) => {
               </div>
 
               {showNewArtistForm && (
-                <form onSubmit={handleCreateArtist} className="new-artist-form">
+                <div className="new-artist-form">
                   <div className="form-group">
                     <label className="form-label">New Artist Name</label>
                     <div className="new-artist-input">
@@ -164,16 +164,20 @@ const Upload = ({ isLoading, setIsLoading }) => {
                         placeholder="Enter artist name"
                         required
                       />
-                      <button type="submit" className="btn btn-primary">
+                      <button 
+                        type="button" 
+                        className="btn btn-primary"
+                        onClick={handleCreateArtist}
+                      >
                         <User className="btn-icon" />
                         Create
                       </button>
                     </div>
                   </div>
-                </form>
+                </div>
               )}
             </div>
-          </form>
+          </div>
 
           <div className="upload-area">
             <div
