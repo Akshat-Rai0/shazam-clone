@@ -77,7 +77,7 @@ async def recognize_song(
                     "song_id": song.id,
                     "title": song.title,
                     "artist": song.artist.name,
-                    "confidence": match_data['confidence'],
+                    "confidence": min(match_data['confidence'] / len(query_fingerprints), 1.0) if len(query_fingerprints) > 0 else 0,
                     "matches": match_data['matches'],
                     "time_offset": match_data['avg_time_offset']
                 })
@@ -176,7 +176,7 @@ async def recognize_with_visualization(
                     "song_id": song.id,
                     "title": song.title,
                     "artist": song.artist.name,
-                    "confidence": match_data['confidence'],
+                    "confidence": min(match_data['confidence'] / len(query_fingerprints), 1.0) if len(query_fingerprints) > 0 else 0,
                     "matches": match_data['matches'],
                     "time_offset": match_data['avg_time_offset']
                 })
