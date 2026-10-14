@@ -1,92 +1,8 @@
-import React, { useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { Upload as UploadIcon, Plus, Music, User } from 'lucide-react';
-import { uploadSong, getArtists, createArtist } from '../services/api';
+import React from 'react';
+import { Upload as UploadIcon, Music, Info } from 'lucide-react';
 import './Upload.css';
 
-const Upload = ({ isLoading, setIsLoading }) => {
-  const [artists, setArtists] = useState([]);
-  const [selectedArtist, setSelectedArtist] = useState('');
-  const [songTitle, setSongTitle] = useState('');
-  const [newArtistName, setNewArtistName] = useState('');
-  const [showNewArtistForm, setShowNewArtistForm] = useState(false);
-  const [uploadResult, setUploadResult] = useState(null);
-  const [error, setError] = useState(null);
-
-  // Load artists on component mount
-  React.useEffect(() => {
-    loadArtists();
-  }, []);
-
-  const loadArtists = async () => {
-    try {
-      const artistsData = await getArtists();
-      setArtists(artistsData);
-    } catch (err) {
-      setError('Failed to load artists');
-    }
-  };
-
-  const onDrop = useCallback(async (acceptedFiles) => {
-    if (acceptedFiles.length === 0) return;
-
-    const file = acceptedFiles[0];
-    setIsLoading(true);
-    setError(null);
-    setUploadResult(null);
-
-    try {
-      if (!selectedArtist && !newArtistName) {
-        throw new Error('Please select an artist or create a new one');
-      }
-
-      let artistId = selectedArtist;
-      
-      // Create new artist if needed
-      if (newArtistName && !selectedArtist) {
-        const newArtist = await createArtist(newArtistName);
-        artistId = newArtist.id;
-        setArtists(prev => [...prev, newArtist]);
-        setSelectedArtist(artistId);
-      }
-
-      const response = await uploadSong(file, songTitle, artistId);
-      setUploadResult(response);
-      setSongTitle('');
-      setSelectedArtist('');
-      setNewArtistName('');
-      setShowNewArtistForm(false);
-    } catch (err) {
-      setError(err.message || 'Upload failed');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selectedArtist, newArtistName, songTitle, setIsLoading]);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'audio/*': ['.mp3', '.wav', '.m4a', '.flac', '.aac']
-    },
-    multiple: false,
-    maxSize: 100 * 1024 * 1024 // 100MB
-  });
-
-  const handleCreateArtist = async (e) => {
-    e.preventDefault();
-    if (!newArtistName.trim()) return;
-
-    try {
-      const newArtist = await createArtist(newArtistName.trim());
-      setArtists(prev => [...prev, newArtist]);
-      setSelectedArtist(newArtist.id);
-      setNewArtistName('');
-      setShowNewArtistForm(false);
-    } catch (err) {
-      setError(err.message || 'Failed to create artist');
-    }
-  };
-
+const Upload = () => {
   return (
     <div className="upload">
       <div className="upload-header">
@@ -102,127 +18,36 @@ const Upload = ({ isLoading, setIsLoading }) => {
       <div className="upload-content">
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Song Information</h2>
+            <h2 className="card-title">Upload Disabled</h2>
             <p className="card-subtitle">
-              Provide song details before uploading
+              Song upload functionality is not available in this demo
             </p>
           </div>
 
-          <div className="upload-form">
-            <div className="form-group">
-              <label className="form-label">Song Title</label>
-              <input
-                type="text"
-                className="form-input"
-                value={songTitle}
-                onChange={(e) => setSongTitle(e.target.value)}
-                placeholder="Enter song title"
-                required
-              />
+          <div className="upload-disabled-notice">
+            <div className="notice-icon">
+              <Info size={48} />
             </div>
-
-            <div className="form-group">
-              <label className="form-label">Artist</label>
-              <div className="artist-selection">
-                <select
-                  className="form-select"
-                  value={selectedArtist}
-                  onChange={(e) => {
-                    setSelectedArtist(e.target.value);
-                    setShowNewArtistForm(false);
-                  }}
-                  disabled={showNewArtistForm}
-                >
-                  <option value="">Select an artist</option>
-                  {artists.map(artist => (
-                    <option key={artist.id} value={artist.id}>
-                      {artist.name}
-                    </option>
-                  ))}
-                </select>
-                
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setShowNewArtistForm(!showNewArtistForm)}
-                >
-                  <Plus className="btn-icon" />
-                  {showNewArtistForm ? 'Cancel' : 'New Artist'}
-                </button>
-              </div>
-
-              {showNewArtistForm && (
-                <div className="new-artist-form">
-                  <div className="form-group">
-                    <label className="form-label">New Artist Name</label>
-                    <div className="new-artist-input">
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={newArtistName}
-                        onChange={(e) => setNewArtistName(e.target.value)}
-                        placeholder="Enter artist name"
-                        required
-                      />
-                      <button 
-                        type="button" 
-                        className="btn btn-primary"
-                        onClick={handleCreateArtist}
-                      >
-                        <User className="btn-icon" />
-                        Create
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="upload-area">
-            <div
-              {...getRootProps()}
-              className={`dropzone ${isDragActive ? 'active' : ''}`}
-            >
-              <input {...getInputProps()} />
-              <Music className="dropzone-icon" />
-              <div className="dropzone-text">
-                {isDragActive ? 'Drop the audio file here' : 'Drag & drop audio file here'}
-              </div>
-              <div className="dropzone-subtext">
-                or click to browse (MP3, WAV, M4A, FLAC, AAC)
-              </div>
-            </div>
-          </div>
-
-          {isLoading && (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Uploading and processing song... This may take a few minutes.</p>
-            </div>
-          )}
-
-          {error && (
-            <div className="error-container">
-              <p className="error-message">{error}</p>
-            </div>
-          )}
-
-          {uploadResult && (
-            <div className="upload-result">
-              <h3 className="result-title">Upload Successful!</h3>
-              <div className="result-details">
-                <p><strong>Song:</strong> {uploadResult.title}</p>
-                <p><strong>Artist:</strong> {uploadResult.artist.name}</p>
-                <p><strong>Duration:</strong> {uploadResult.duration}s</p>
-                <p><strong>Status:</strong> {uploadResult.status}</p>
-              </div>
-              <p className="result-note">
-                The song is being processed in the background. 
-                Check the Library page to monitor processing status.
+            <div className="notice-content">
+              <h3>Upload Feature Disabled</h3>
+              <p>
+                Song upload is disabled in this demo deployment. 
+                The system comes pre-loaded with 5 test songs for audio recognition testing.
+              </p>
+              <p>
+                To test the recognition feature, please:
+              </p>
+              <ul>
+                <li>Visit the <strong>Library</strong> page to see the pre-loaded songs</li>
+                <li>Go to the <strong>Home</strong> page to upload audio clips for recognition</li>
+                <li>Record or upload a short audio clip from one of the pre-loaded songs</li>
+              </ul>
+              <p className="notice-note">
+                <Music size={16} />
+                The pre-loaded songs include various genres and styles to demonstrate the recognition system.
               </p>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

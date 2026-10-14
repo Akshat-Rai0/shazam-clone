@@ -20,10 +20,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
+# Copy and make startup script executable
+COPY render-start.sh /app/render-start.sh
+RUN chmod +x /app/render-start.sh
+
 # Create media directory
 RUN mkdir -p /app/media
 
 # Expose port
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use startup script that handles migrations and seeding
+CMD ["/app/render-start.sh"]

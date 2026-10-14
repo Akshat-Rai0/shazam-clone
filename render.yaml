@@ -1,0 +1,45 @@
+# Render Blueprint for Shazam Clone
+# This file defines the services needed for deployment
+# To deploy: render blueprint validate and render blueprint apply
+
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: shazam-clone-db
+    plan: free
+    region: oregon
+    databaseName: shazam_db
+    postgresVersion: 15
+
+  # Backend API (FastAPI)
+  - type: web
+    name: shazam-clone-api
+    plan: free
+    region: oregon
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: shazam-clone-db
+          property: connectionString
+      - key: UPLOAD_DIR
+        value: /tmp
+      - key: PORT
+        value: 8000
+
+  # Frontend (React Static Site)
+  - type: web
+    name: shazam-clone-frontend
+    plan: free
+    region: oregon
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: shazam-clone-api
+          property: url

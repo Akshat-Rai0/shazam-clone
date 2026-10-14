@@ -40,6 +40,12 @@ media/
 *.mp3
 *.flac
 
+# Test songs directory (don't commit audio files)
+test_songs/
+
+# But allow seed_data.sql to be committed
+!seed_data.sql
+
 # IDEs
 .vscode/
 .idea/

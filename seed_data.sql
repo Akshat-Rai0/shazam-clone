@@ -1,0 +1,7 @@
+-- This file will be populated by running the generate_fingerprints.py script
+-- Instructions:
+-- 1. Place 5 audio files (MP3 or WAV) in the test_songs/ directory
+-- 2. Run: docker-compose up -d db
+-- 3. Run: python scripts/generate_fingerprints.py
+-- 4. This will generate fingerprints and populate this file
+-- 5. Commit this file to the repository
