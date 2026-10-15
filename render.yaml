@@ -35,8 +35,9 @@ services:
     name: shazam-clone-frontend
     plan: free
     region: oregon
-    buildCommand: cd frontend && npm install && npm run build
-    publishPath: frontend/build
+    rootDirectory: frontend
+    buildCommand: npm install && npm run build
+    publishPath: build
     envVars:
       - key: REACT_APP_API_URL
         fromService:
