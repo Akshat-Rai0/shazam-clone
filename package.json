@@ -2,7 +2,7 @@
   "name": "shazam-clone",
   "version": "1.0.0",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "scripts": {
     "install": "cd frontend && rm -rf node_modules && npm install",
